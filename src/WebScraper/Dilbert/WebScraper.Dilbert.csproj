@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>WebScraper.Dilbert</AssemblyName>
+    <RootNamespace>WebScraper.Dilbert</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebScraper.Core\WebScraper.Core.csproj" />
+  </ItemGroup>
+
+</Project>
