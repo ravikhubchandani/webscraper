@@ -13,7 +13,7 @@ namespace WebScraper.Core
             _baseUrl = baseUrl?.Trim('/') ?? "+";
         }
 
-        public async Task<string> GetResponse(params string[] address)
+        public async Task<string> GetResponseAsync(params string[] address)
         {
             var uri = GetAddress(address);
             var httpClient = new HttpClient();
@@ -22,6 +22,7 @@ namespace WebScraper.Core
             string body = await response.Content.ReadAsStringAsync();
             return body;
         }
+
 
         private Uri GetAddress(params string[] uri)
         {

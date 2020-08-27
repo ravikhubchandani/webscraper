@@ -32,13 +32,13 @@ namespace WebScraper.Core
                 UseDefaultCredentials = false,
                 Credentials = new NetworkCredential(fromAddress, fromPassword),
                 Host = "smtp.gmail.com",
-                Port = 587                
+                Port = 587
             };
             using (var message = new MailMessage(fromAddress, string.Join(',', _recievers))
             {
                 Subject = EmailSubject,
                 Body = content,
-                IsBodyHtml = true                    
+                IsBodyHtml = true
             })
             {
                 smtp.Send(message);
