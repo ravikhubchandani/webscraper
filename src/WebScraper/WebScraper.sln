@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScraper.Core", "WebScraper.Core\WebScraper.Core.csproj", "{70CC723C-7DC3-4464-AF45-500588F2C819}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScraper.Dilbert", "Dilbert\WebScraper.Dilbert.csproj", "{E22CA851-95E6-40DB-BB00-848E19D1390E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScraper.DailyStrips", "Dilbert\WebScraper.DailyStrips.csproj", "{E22CA851-95E6-40DB-BB00-848E19D1390E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,8 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyName>WebScraper.Dilbert</AssemblyName>
-    <RootNamespace>WebScraper.Dilbert</RootNamespace>
+    <AssemblyName>WebScraper.DailyStrips</AssemblyName>
+    <RootNamespace>WebScraper.DailyStrips</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
