@@ -16,7 +16,7 @@ namespace WebScraper.Core
         public async Task<string> GetResponseAsync(params string[] address)
         {
             var uri = GetAddress(address);
-            var httpClient = new HttpClient();
+            var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(200) };
             HttpResponseMessage response = await httpClient.GetAsync(uri);
             response.EnsureSuccessStatusCode();
             string body = await response.Content.ReadAsStringAsync();

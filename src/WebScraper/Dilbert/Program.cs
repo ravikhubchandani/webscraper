@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using WebScraper.Core;
 
 namespace WebScraper.DailyStrips
@@ -17,6 +18,9 @@ namespace WebScraper.DailyStrips
             var stripCollection = new List<(string src, string title)>();
             AddDilbert(stripCollection, DateTime.Today);
             AddGoComicsStrip(stripCollection, DateTime.Today, "garfield", "adult-children", "peanuts", "9to5", "calvinandhobbes", "wtduck", "shen-comix");
+
+            if (!stripCollection.Any())
+                return;
 
             if (PUSH_TO_EMAIL)
             {
@@ -48,12 +52,11 @@ namespace WebScraper.DailyStrips
 
         private static void AddDilbert(List<(string src, string title)> stripCollection, DateTime when)
         {
+            Console.WriteLine("Fetching Dilbert");
             string source = "https://dilbert.com/";
             string selector = "div.img-comic-container img";
             string[] route = { "strip", when.ToString("yyyy-MM-dd") };
-            IElement domElement = GetDomForStrip(source, selector, route);
-            (string, string) stripData = GetStripData(domElement, "src", "alt");
-            stripCollection.Add(stripData);
+            GetStripFromSourceAndAddToCollection(stripCollection, source, selector, route, "src", "alt");
         }
 
         private static void AddGoComicsStrip(List<(string src, string title)> stripCollection, DateTime when, params string[] codes)
@@ -62,12 +65,29 @@ namespace WebScraper.DailyStrips
             string selector = "div.comic__image img.img-fluid";
             foreach (string code in codes)
             {
+                Console.WriteLine("Fetching " + code);
                 string[] route = { code, when.ToString("yyyy"), when.ToString("MM"), when.ToString("dd") };
-                IElement domElement = GetDomForStrip(source, selector, route);
-                if (domElement != null)
+                GetStripFromSourceAndAddToCollection(stripCollection, source, selector, route, "src", "alt");
+            }
+        }
+
+        private static void GetStripFromSourceAndAddToCollection(List<(string src, string title)> stripCollection, string source, string selector, string[] route, string imgAttr, string titleAttr)
+        {
+            for (int tries = 0; tries < 5; tries++)
+            {
+                try
                 {
-                    (string, string) stripData = GetStripData(domElement, "src", "alt");
-                    stripCollection.Add(stripData);
+                    IElement domElement = GetDomForStrip(source, selector, route);
+                    if (domElement != null)
+                    {
+                        (string, string) stripData = GetStripData(domElement, imgAttr, titleAttr);
+                        stripCollection.Add(stripData);
+                    }
+                    break;
+                }
+                catch (Exception e)
+                {
+                    Thread.Sleep(5000);
                 }
             }
         }
