@@ -7,7 +7,8 @@ namespace WebScraper.Core
 {
     public class WebSource
     {
-        private string _baseUrl;
+        private readonly string _baseUrl;
+
         public WebSource(string baseUrl)
         {
             _baseUrl = baseUrl?.Trim('/') ?? "+";

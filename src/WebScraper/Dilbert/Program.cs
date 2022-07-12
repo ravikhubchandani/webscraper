@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Dom;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -7,16 +8,19 @@ using WebScraper.Core;
 
 namespace WebScraper.DailyStrips
 {
-    public class Program
+    public static class Program
     {
+        private static AppSettings _appSettings;
+
         static void Main(string[] args)
         {
             const bool PUSH_TO_EMAIL = false;
             const bool PUSH_TO_TEAMS = true;
+            _appSettings = GetAppSettings();
 
             var stripCollection = new List<(string src, string title)>();
             AddDilbert(stripCollection, DateTime.Today);
-            AddGoComicsStrip(stripCollection, DateTime.Today, "garfield", "adult-children", "peanuts", "9to5", "calvinandhobbes", "wtduck", "shen-comix");
+            AddGoComicsStrip(stripCollection, DateTime.Today, _appSettings.GoComicsStrips);
 
             if (PUSH_TO_EMAIL)
             {
@@ -31,18 +35,29 @@ namespace WebScraper.DailyStrips
             }
         }
 
+        private static AppSettings GetAppSettings()
+        {
+            var settings = new AppSettings();
+            IConfiguration config = new ConfigurationBuilder()
+                   .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                   .Build();
+            config.Bind(settings);
+            return settings;
+        }
+
         private static void SendTeamsNotification(string msg)
         {
-            // This would need an actual id string.
-            // TO DO Move this string id to configuration file
-            var notifier = new TeamsNotifier("https://outlook.office.com/webhook/WEBHOOK-ID");
+            var notifier = new TeamsNotifier(_appSettings.TeamsWebhookUri);
             notifier.Push(msg);
         }
 
         private static void SendEmailNotification(string msg)
         {
-            var notifier = new EmailNotifier { EmailSubject = "Daily strips - " + DateTime.Today.ToString("dddd dd", CultureInfo.GetCultureInfo("es-ES")) };
-            notifier.AddReciever("ravirajkhubchandani@gmail.com");
+            var notifier = new EmailNotifier(_appSettings.EmailAddressFrom, _appSettings.EmailAddressFromPassword)
+            {
+                EmailSubject = "Daily strips - " + DateTime.Today.ToString("dddd dd", CultureInfo.GetCultureInfo("es-ES"))
+            };
+            notifier.AddReciever(_appSettings.EmailAddressTo);
             notifier.Push(msg);
         }
 

@@ -5,7 +5,7 @@ namespace WebScraper.Core
 {
     public class TeamsNotifier : INotifier
     {
-        private string _hookUrl;
+        private readonly string _hookUrl;
 
         public TeamsNotifier(string hookUrl)
         {
