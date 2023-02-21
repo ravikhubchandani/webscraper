@@ -33,7 +33,7 @@ public class ComicStripFetcher
     [OpenApiOperation(operationId: "Run", tags: new[] { "date" })]
     [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
     [OpenApiParameter(name: "date", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The date parameter yyyy-MM-dd")]
-    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
+    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/html", bodyType: typeof(string), Description = "The OK response")]
     public async Task<IActionResult> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
     {
@@ -51,7 +51,12 @@ public class ComicStripFetcher
             AddDilbert(stripCollection, DateTime.Today);
             AddGoComicsStrip(stripCollection, date, comics);
             string responseMessage = GetHtmlNotification(stripCollection);
-            return new OkObjectResult(responseMessage);
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                Content = responseMessage
+            };
         }
         catch (Exception e)
         {
