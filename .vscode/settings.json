@@ -1,0 +1,8 @@
+{
+    "azureFunctions.deploySubpath": "src\\WebScraper\\AzureFunction.ComicStripFetcher/bin/Release/net8.0",
+    "azureFunctions.projectLanguage": "C#",
+    "azureFunctions.projectRuntime": "~4",
+    "debug.internalConsoleOptions": "neverOpen",
+    "azureFunctions.preDeployTask": "publish (functions)",
+    "azureFunctions.projectSubpath": "src\\WebScraper\\AzureFunction.ComicStripFetcher",
+}

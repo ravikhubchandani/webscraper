@@ -1,17 +1,13 @@
-namespace AzureComicStripFetcherFunction;
+namespace AzureFunctions;
 
 using System;
 using System.IO;
-using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Globalization;
@@ -26,10 +22,6 @@ public class ComicStripFetcher
     }
 
     [FunctionName("ComicStripFetcher")]
-    [OpenApiOperation(operationId: "Run", tags: new[] { "date" })]
-    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-    [OpenApiParameter(name: "date", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The date parameter yyyy-MM-dd")]
-    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/html", bodyType: typeof(string), Description = "The OK response")]
     public async Task<IActionResult> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
     {
@@ -77,4 +69,3 @@ public class ComicStripFetcher
         return @default;
     }
 }
-
