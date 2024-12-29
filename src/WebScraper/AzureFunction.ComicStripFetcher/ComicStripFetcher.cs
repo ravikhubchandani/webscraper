@@ -52,15 +52,12 @@ public class ComicStripFetcher
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             var receiveremail = await GetReceiverEmailFromQueryOrDefaultAsync(req, string.Empty);
+            string resultMessage = string.Empty;
 
             if(string.IsNullOrEmpty(receiveremail))
             {
-                return new ContentResult
-                {
-                    ContentType = "text/html",
-                    Content = "<html><body>Email not sent. Please add receiveremail parameter in query string</body></html>"
-                };
-                }
+                resultMessage = "Email not sent. Please add receiveremail parameter in query string";
+            }
             else
             {
                 var date = await GetDateFromQueryOrDefaultAsync(req, DateTime.Now);
@@ -76,13 +73,14 @@ public class ComicStripFetcher
 
                 notifier.AddReciever(receiveremail);
                 notifier.Push(responseMessage);
-
-                return new ContentResult
-                {
-                    ContentType = "text/html",
-                    Content = "<html><body>Email sent</body></html>"
-                };
+                resultMessage = $"Email sent to {receiveremail}";
             }
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                Content = $"<html><body>{resultMessage}</body></html>"
+            };
         }
         catch (Exception e)
         {
