@@ -13,9 +13,8 @@ namespace WebScraper.DailyStrips
 
         static void Main(string[] args)
         {
-            const bool PUSH_TO_GMAIL = false;
+            const bool PUSH_TO_EMAIL = true;
             const bool PUSH_TO_TEAMS = false;
-            const bool PUSH_TO_MAILCHIMP = true;
             _appSettings = GetAppSettings();
 
             var stripCollection = new List<(string src, string title)>();
@@ -27,7 +26,7 @@ namespace WebScraper.DailyStrips
             if (!stripCollection.Any())
                 return;
 
-            if (PUSH_TO_GMAIL)
+            if (PUSH_TO_EMAIL)
             {
                 string msg = StripContentConentGenerator.GetComicStripHtmlContent(stripCollection);
                 SendGmailNotification(msg);
@@ -37,12 +36,6 @@ namespace WebScraper.DailyStrips
             {
                 string msg = GetJsonNotification(stripCollection);
                 SendTeamsNotification(msg);
-            }
-
-            if (PUSH_TO_MAILCHIMP)
-            {
-                string msg = StripContentConentGenerator.GetComicStripHtmlContent(stripCollection);
-                SendMailChimpNotification(msg);
             }
         }
 
@@ -56,12 +49,6 @@ namespace WebScraper.DailyStrips
             return settings;
         }
 
-        private static void SendMailChimpNotification(string msg)
-        {
-            // var notifier = new MailChimpNotifier(_appSettings.MailChimpApiKey, _appSettings.MailChimpListId);
-            // notifier.Push(msg);
-        }
-
         private static void SendTeamsNotification(string msg)
         {
             var notifier = new TeamsNotifier(_appSettings.TeamsWebhookUri);
@@ -70,7 +57,7 @@ namespace WebScraper.DailyStrips
 
         private static void SendGmailNotification(string msg)
         {
-            var notifier = new GmailNotifier(_appSettings.EmailAddressFrom, _appSettings.EmailAddressFromPassword)
+            var notifier = new EmailNotifier(_appSettings.AzureAcsConnectionString, _appSettings.AzureAcsSenderEmail)
             {
                 EmailSubject = "Daily strips - " + DateTime.Today.ToString("dddd dd", CultureInfo.GetCultureInfo("es-ES"))
             };
