@@ -4,14 +4,14 @@ using System.Net.Mail;
 
 namespace WebScraper.Core
 {
-    public class EmailNotifier : INotifier
+    public class GmailNotifier : INotifier
     {
         public string EmailSubject { get; set; }
         private readonly List<string> _recievers;
         private readonly string _emailAddressFrom;
         private readonly string _emailAddressFromPwd;
 
-        public EmailNotifier(string emailAddressFrom, string emailAddressFromPwd)
+        public GmailNotifier(string emailAddressFrom, string emailAddressFromPwd)
         {
             _recievers = new List<string>();
             _emailAddressFrom = emailAddressFrom;
