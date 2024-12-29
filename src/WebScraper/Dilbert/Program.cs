@@ -19,7 +19,9 @@ namespace WebScraper.DailyStrips
             _appSettings = GetAppSettings();
 
             var stripCollection = new List<(string src, string title)>();
-            StripContentConentGenerator.AddDilbert(stripCollection, DateTime.Today);
+
+            // Apparently Dilbert is not available anymore
+            // StripContentConentGenerator.AddDilbert(stripCollection, DateTime.Today);
             StripContentConentGenerator.AddGoComicsStrip(stripCollection, DateTime.Today, _appSettings.GoComicsStrips);
 
             if (!stripCollection.Any())

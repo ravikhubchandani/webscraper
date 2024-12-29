@@ -45,9 +45,11 @@ public class ComicStripFetcher
 
     private static string GenerateComicStripsHtmlContentForDate(DateTime date)
     {
-        string[] comics = { "garfield", "adult-children", "peanuts", "9to5", "calvinandhobbes", "wtduck", "shen-comix" };
+        string[] comics = { "garfield", "adult-children", "peanuts", "9to5", "calvinandhobbes" };
         var stripCollection = new List<(string src, string title)>();
-        StripContentConentGenerator.AddDilbert(stripCollection, DateTime.Today);
+        
+        // Apparently Dilbert is not available anymore
+        // StripContentConentGenerator.AddDilbert(stripCollection, DateTime.Today);
         StripContentConentGenerator.AddGoComicsStrip(stripCollection, date, comics);
         return StripContentConentGenerator.GetComicStripHtmlContent(stripCollection);
     }
