@@ -90,7 +90,7 @@ public class ComicStripFetcher
 
     private static string GenerateComicStripsHtmlContentForDate(DateTime date)
     {
-        string[] comics = { "garfield", "adult-children", "peanuts", "9to5", "calvinandhobbes" };
+        string[] comics = { "garfield", "adult-children", "peanuts", "9to5", "calvinandhobbes", "bc", "ziggy" };
         var stripCollection = new List<(string src, string title)>();
         
         // Apparently Dilbert is not available anymore
