@@ -16,6 +16,8 @@ using WebScraper.Core;
 public class ComicStripFetcher
 {
     private readonly ILogger<ComicStripFetcher> _logger;
+    private const string _azureAcsConnectionStringKeyVaultEntry = "AzureAcsConnectionString";
+    private const string _azureAcsSenderEmailKeyVaultEntry = "AzureAcsSenderEmail";
 
     public ComicStripFetcher(ILogger<ComicStripFetcher> log)
     {
@@ -51,22 +53,21 @@ public class ComicStripFetcher
         try
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-            var receiveremail = await GetReceiverEmailFromQueryOrDefaultAsync(req, string.Empty);
+            var receiveremail = await GetReceiversEmailsFromQueryOrDefaultAsync(req, string.Empty);
             string resultMessage = string.Empty;
 
-            if(string.IsNullOrEmpty(receiveremail))
+            if(receiveremail == null || receiveremail.Length == 0)
             {
-                resultMessage = "Email not sent. Please add receiveremail parameter in query string";
+                resultMessage = "Email not sent. Please add email address (or multiple emails separated by ; ) as receiveremail parameter in query string";
             }
             else
             {
                 var date = await GetDateFromQueryOrDefaultAsync(req, DateTime.Now);
                 string responseMessage = GenerateComicStripsHtmlContentForDate(date);
 
-                // TODO Move connection string and sender email to environment variables
                 var notifier = new EmailNotifier(
-                    azureAcsConnectionString: "REPLACE_ME",
-                    azureAcsSenderEmail: "REPLACE_ME")
+                    azureAcsConnectionString: Environment.GetEnvironmentVariable(_azureAcsConnectionStringKeyVaultEntry, EnvironmentVariableTarget.Process),
+                    azureAcsSenderEmail: Environment.GetEnvironmentVariable(_azureAcsSenderEmailKeyVaultEntry, EnvironmentVariableTarget.Process))
                 {
                     EmailSubject = "Daily strips - " + DateTime.Today.ToString("dddd dd", CultureInfo.GetCultureInfo("es-ES"))
                 };
@@ -107,12 +108,13 @@ public class ComicStripFetcher
         return TryParseDateTimeOrDefault(dateStr ?? data?.name, @default);
     }
 
-    private async static Task<string> GetReceiverEmailFromQueryOrDefaultAsync(HttpRequest req, string @default)
+    private async static Task<string[]> GetReceiversEmailsFromQueryOrDefaultAsync(HttpRequest req, string @default)
     {
         string email = req.Query["receiveremail"];
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
         dynamic data = JsonConvert.DeserializeObject(requestBody);
-        return email ?? data?.email ?? @default;
+        string emailsCsv = email ?? data?.email ?? @default;
+        return emailsCsv == null ? Array.Empty<string>() : emailsCsv.Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
     }
 
     private static DateTime TryParseDateTimeOrDefault(string value, DateTime @default)
